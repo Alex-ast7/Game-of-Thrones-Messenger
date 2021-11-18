@@ -1,20 +1,17 @@
-import sys
 import datetime
+import sys
 
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QSize, Qt
+from PyQt5.QtCore import QSize
+from PyQt5.QtGui import QKeySequence
 from PyQt5.QtWidgets import QApplication, QMainWindow, QShortcut
 
-from bots import bot
-from bots.bot import ChatBot
 from config import UiDesignConfig, UiAppConfig
 from db.chat import ChatDB
 from db.db import DataBase
 from db.message import MessageDB
 from db.user import UserDB
-from chooseChat import OpenChat
 from design import Ui_MainWindow, SCREEN_HEIGHT, SCREEN_WIDTH
-from PyQt5.QtGui import QKeySequence
 from models.message import Message
 
 
@@ -37,23 +34,16 @@ class Assistant(QMainWindow, Ui_MainWindow):
         self.chat_db = ChatDB(self.db)
         self.user_db = UserDB(self.db)
 
-    def start_open_chat(self):
-        try:
-            self.chat_window.clear()
-            self.menu()
-            self.progress_bar.show()
-            self.main_bot = self.app.bots[self.sender().i]()
-            self.main_bot.mode = 'Open'
-            print(1)
-            self.main_bot.progress.connect(self.change_progressbar_val)
-            self.main_bot.status.connect(self.change_progressbar_status)
-            self.main_bot.start()
-        except Exception as e:
-            print(e)
-
-    def finish_open_chat(self):
-        self.progress_bar.hide()
+    def open_chat(self):
+        self.chat_window.clear()
+        self.menu()
+        self.progress_bar.show()
+        self.main_bot = self.app.bots[self.sender().i]()
+        self.main_bot.mode = 'open'
         self.fill_chat(self.main_bot.__class__.__name__)
+        self.main_bot.progress.connect(self.change_progressbar_val)
+        self.main_bot.status.connect(self.change_progressbar_status)
+        self.main_bot.start()
 
     def create_info(self, name, date):
         info = QtWidgets.QLabel(self.centralwidget)
@@ -94,26 +84,27 @@ class Assistant(QMainWindow, Ui_MainWindow):
 
     def change_progressbar_val(self, value):
         self.progress_bar.setValue(value)
+        if value == 100:
+            self.progress_bar.hide()
 
     def change_progressbar_status(self, status):
-        print(self.progress_bar.width())
         self.progress_bar.setFormat(status)
-        try:
-            # self.progress_bar.setAlignment(Qt.AlignCenter)
-            print(self.progress_bar.width())
-        except Exception as e:
-            print(e)
 
     def send(self):
         message = self.message_input.text()
         self.message_input.clear()
         if message:
-            self.main_bot.mode = 'Create answer'
-            self.create_info(self.app.name, datetime.datetime.now().strftime("%d-%m-%Y %H:%M"))
+            self.main_bot.mode = 'answer'
+            self.create_info(self.app.name,
+                             datetime.datetime.now().strftime("%d-%m-%Y %H:%M"))
             self.create_message(message)
-            self.message_db.post(Message(id=0, name=self.app.name, text=message, time=datetime.datetime.now(), chat=self.main_bot.__class__.__name__))
+            self.message_db.post(Message(id=0, name=self.app.name, text=message,
+                                         time=datetime.datetime.now(),
+                                         chat=self.main_bot.__class__.__name__))
             self.progress_bar.show()
             self.main_bot.context = message
+            self.main_bot.progress.connect(self.change_progressbar_val)
+            self.main_bot.status.connect(self.change_progressbar_status)
             self.main_bot.answer.connect(self.get_answer)
             self.main_bot.start()
 
@@ -125,11 +116,13 @@ class Assistant(QMainWindow, Ui_MainWindow):
                                  "%d-%m-%Y %H:%M"))
             self.create_message(answer)
             self.message_db.post(
-                Message(id=0, name=self.main_bot.__class__.__name__, text=answer,
+                Message(id=0, name=self.main_bot.__class__.__name__,
+                        text=answer,
                         time=datetime.datetime.now(),
                         chat=self.main_bot.__class__.__name__))
         except Exception as e:
             print(e)
+
     def setupChats(self, chats_count):
         self.chats = []
         for i in range(chats_count):
@@ -143,25 +136,25 @@ class Assistant(QMainWindow, Ui_MainWindow):
                                'border-width: 2px;'
                                'border-radius: 2px;'
                                'border-color: qlineargradient(spread:pad, '
-                                  'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
-                                  '#d50000, stop:0.22 '
-                                  '#7e0303, stop:0.5 '
-                                  '#ff001a, stop:0.78 '
-                                  '#7e0303, stop:1 '
-                                  '#d50000);'
+                               'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
+                               '#d50000, stop:0.22 '
+                               '#7e0303, stop:0.5 '
+                               '#ff001a, stop:0.78 '
+                               '#7e0303, stop:1 '
+                               '#d50000);'
                                'font-family: "Trajan Pro 3";'
                                'font-size: 18px;'
                                'color: qlineargradient(spread:pad, '
-                                  'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
-                                  '#d50000, stop:0.22 '
-                                  '#7e0303, stop:0.5 '
-                                  '#ff001a, stop:0.78 '
-                                  '#7e0303, stop:1 '
-                                  '#d50000);')
+                               'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
+                               '#d50000, stop:0.22 '
+                               '#7e0303, stop:0.5 '
+                               '#ff001a, stop:0.78 '
+                               '#7e0303, stop:1 '
+                               '#d50000);')
             chat.hide()
             chat.i = i
             chat.setText(self.app.bots[i].__name__)
-            chat.clicked.connect(self.start_open_chat)
+            chat.clicked.connect(self.open_chat)
             self.chats.append(chat)
 
     def menu(self):
@@ -219,15 +212,17 @@ class Assistant(QMainWindow, Ui_MainWindow):
         return tokens
 
     def fill_chat(self, chat):
-
         try:
-            messages = self.message_db.get(chat=self.chat_db.get(title=chat)[0].id)
+            messages = self.message_db.get(
+                chat=self.chat_db.get(title=chat)[0].id)
             for message in messages:
-                self.create_info(message.name, message.time)
+                self.create_info(message.name,
+                                 message.time.strftime("%d-%m-%Y %H:%M"))
                 self.create_message(message.text)
 
         except Exception as e:
             print(e)
+
 
 if __name__ == '__main__':
     try:

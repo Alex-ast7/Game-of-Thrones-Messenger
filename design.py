@@ -18,9 +18,9 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setPointSize(12)
         fontDB = QFontDatabase()
-        fontDB.addApplicationFont('Montserrat-Regular.ttf')
-        fontDB.addApplicationFont('Montserrat-Bold.ttf')
-        fontDB.addApplicationFont('Trajan.ttf')
+        fontDB.addApplicationFont('data/fonts/Montserrat-Regular.ttf')
+        fontDB.addApplicationFont('data/fonts/Montserrat-Bold.ttf')
+        fontDB.addApplicationFont('data/fonts/Trajan.ttf')
         self.message_input = QtWidgets.QLineEdit(self.centralwidget)
         self.message_input.setGeometry(QtCore.QRect(SCREEN_WIDTH * 0.046,
                                                  SCREEN_HEIGHT * 0.945,
@@ -49,7 +49,7 @@ class Ui_MainWindow(object):
                                   '#7e0303, stop:1 '
                                   '#d50000);')
         self.send_button.setObjectName("send_button")
-        self.send_button.setIcon(QIcon('sword.png'))
+        self.send_button.setIcon(QIcon('data/images/sword.png'))
         self.send_button.setIconSize(QSize(self.send_button.width() + 30, self.send_button.height()))
         self.chat_window.setObjectName("listWidget")
 
@@ -113,7 +113,7 @@ class Ui_MainWindow(object):
                                       'text-align: left;'
                                       'font-size: 18px}'
                                       'QListWidget {background-image: '
-                                      'url("фон чата.png");}')
+                                      'url("data/images/фон чата.png");}')
         self.chat_window.setFlow(QListView.LeftToRight)
         self.chat_window.setResizeMode(QListView.Adjust)
         self.chat_window.setSpacing(5)

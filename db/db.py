@@ -14,7 +14,6 @@ class DataBase:
                                                  type(v).__name__ == 'int'
                                                  else f'{k} == "{v}"' for
                                                  k, v in kwargs.items()])
-        print(request)
         return self.cursor.execute(request).fetchall()
 
     def post_response(self, table, **kwargs):

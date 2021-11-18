@@ -2,7 +2,8 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtWidgets import QMainWindow
 
-from bots.bot import ChatBot, QABot
+from chatbots.speaker import Speaker
+from chatbots.qa import QA
 from design import SCREEN_WIDTH, SCREEN_HEIGHT
 
 
@@ -44,6 +45,6 @@ class UiAppConfig(QMainWindow):
     def __init__(self):
         super(UiAppConfig, self).__init__()
         self.name = 'Саша'
-        self.bots = [ChatBot, QABot]
+        self.bots = [Speaker, QA]
         self.labels_text = []
         self.infoes = []
