@@ -2,9 +2,11 @@ import sys
 import datetime
 
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow, QShortcut
 
+from bots import bot
+from bots.bot import ChatBot
 from config import UiDesignConfig, UiAppConfig
 from db.chat import ChatDB
 from db.db import DataBase
@@ -39,16 +41,18 @@ class Assistant(QMainWindow, Ui_MainWindow):
         try:
             self.chat_window.clear()
             self.menu()
-            self.progess_bar.show()
+            self.progress_bar.show()
             self.main_bot = self.app.bots[self.sender().i]()
-            self.thread_chat = OpenChat()
-            self.thread_chat.signal.connect(self.finish_open_chat)
-            self.thread_chat.start()
+            self.main_bot.mode = 'Open'
+            print(1)
+            self.main_bot.progress.connect(self.change_progressbar_val)
+            self.main_bot.status.connect(self.change_progressbar_status)
+            self.main_bot.start()
         except Exception as e:
             print(e)
 
-    def finish_open_chat(self, val):
-        self.progess_bar.hide()
+    def finish_open_chat(self):
+        self.progress_bar.hide()
         self.fill_chat(self.main_bot.__class__.__name__)
 
     def create_info(self, name, date):
@@ -88,20 +92,33 @@ class Assistant(QMainWindow, Ui_MainWindow):
         label_text.i = len(self.app.labels_text)
         self.app.labels_text.append(label_text)
 
+    def change_progressbar_val(self, value):
+        self.progress_bar.setValue(value)
+
+    def change_progressbar_status(self, status):
+        print(self.progress_bar.width())
+        self.progress_bar.setFormat(status)
+        try:
+            # self.progress_bar.setAlignment(Qt.AlignCenter)
+            print(self.progress_bar.width())
+        except Exception as e:
+            print(e)
+
     def send(self):
         message = self.message_input.text()
         self.message_input.clear()
         if message:
+            self.main_bot.mode = 'Create answer'
             self.create_info(self.app.name, datetime.datetime.now().strftime("%d-%m-%Y %H:%M"))
             self.create_message(message)
             self.message_db.post(Message(id=0, name=self.app.name, text=message, time=datetime.datetime.now(), chat=self.main_bot.__class__.__name__))
-            self.progess_bar.show()
+            self.progress_bar.show()
             self.main_bot.context = message
             self.main_bot.answer.connect(self.get_answer)
             self.main_bot.start()
 
     def get_answer(self, answer):
-        self.progess_bar.hide()
+        self.progress_bar.hide()
         try:
             self.create_info(self.main_bot.__class__.__name__,
                              datetime.datetime.now().strftime(

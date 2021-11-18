@@ -4,12 +4,30 @@ from tqdm import tqdm
 
 class ChatBot(QThread):
     answer = pyqtSignal(str)
+    progress = pyqtSignal(int)
+    status = pyqtSignal(str)
+    mode = None
     context = ''
 
     def run(self):
-        for _ in tqdm(range(10 ** 7)):
-            pass
-        self.answer.emit(self.context)
+        if self.mode == 'Open':
+            for _ in tqdm(range(10 ** 7)):
+                pass
+            self.answer.emit(self.context)
+            self.progress.emit(30)
+            self.status.emit('g')
+            for _ in tqdm(range(10 ** 7)):
+                pass
+            self.progress.emit(60)
+            self.status.emit('g')
+        # elif self.mode == 'Create answer':
+        #     for _ in tqdm(range(10 ** 7)):
+        #         pass
+        #     self.answer.emit(self.context)
+        #     self.status.emit('первая фаза')
+        #     for _ in tqdm(range(10 ** 7)):
+        #         pass
+        #     self.status.emit('вторая фаза')
 
 class QABot:
     def __init__(self):

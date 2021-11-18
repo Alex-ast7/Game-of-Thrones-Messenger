@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QFontDatabase, QIcon
 from PyQt5.QtWidgets import QListView
 from win32api import GetSystemMetrics
@@ -131,14 +131,15 @@ class Ui_MainWindow(object):
                                   '#d50000);')
         self.send_button.setText('')
         self.menu_window.hide()
-        self.progess_bar = QtWidgets.QProgressBar(self.centralwidget)
-        self.progess_bar.setGeometry(QtCore.QRect(SCREEN_WIDTH * 0.25,
+        self.progress_bar = QtWidgets.QProgressBar(self.centralwidget)
+        self.progress_bar.setGeometry(QtCore.QRect(SCREEN_WIDTH * 0.25,
                                                   SCREEN_HEIGHT * 0.5,
                                                   SCREEN_WIDTH * 0.5,
                                                   SCREEN_HEIGHT * 0.03))
-        self.progess_bar.setValue(99)
-        self.progess_bar.setTextVisible(False)
-        self.progess_bar.hide()
+        # self.progress_bar.setValue(99)
+        self.progress_bar.setAlignment(Qt.AlignCenter)
+        self.progress_bar.setTextVisible(True)
+        self.progress_bar.hide()
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

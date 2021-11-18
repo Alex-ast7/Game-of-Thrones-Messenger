@@ -1,5 +1,6 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 from tqdm import tqdm
+from bots import bot
 
 
 class OpenChat(QThread):

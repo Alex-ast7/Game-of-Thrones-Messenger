@@ -5,7 +5,10 @@ checkpoint = "Grossmend/rudialogpt3_medium_based_on_gpt2"
 tokenizer =  AutoTokenizer.from_pretrained(checkpoint)
 
 
+# [optional] Insert your checkpoint if needed:
+#model = torch.load("GPT2_checkpoint-more-data-2ep.pt", map_location=torch.device('cpu'))
 model = AutoModelForCausalLM.from_pretrained(pretrained_model_name_or_path='game/',)
+#model.load_state_dict(checkpoint['model_state_dict'])
 model = model.to('cpu')
 model.eval()
 def get_length_param(text: str) -> str:
@@ -24,6 +27,7 @@ for i in range(3):
     input_user = input("===> User:")
     new_user_input_ids = tokenizer.encode(f"|0|{get_length_param(input_user)}|" \
                                                   + input_user + tokenizer.eos_token, return_tensors="pt")
+    # encode the new user input, add parameters and return a tensor in Pytorch
     chat_history_ids = torch.cat([chat_history_ids, new_user_input_ids], dim=-1)
     next_len = 2
     new_user_input_ids = tokenizer.encode(f"|1|{next_len}|", return_tensors="pt")
@@ -32,7 +36,7 @@ for i in range(3):
     input_len = chat_history_ids.shape[-1]
     chat_history_ids = model.generate(
         chat_history_ids,
-        num_return_sequences=1,
+        num_return_sequences=1,  # use for more variants, but have to print [i]
         max_length=512,
         no_repeat_ngram_size=3,
         do_sample=True,
