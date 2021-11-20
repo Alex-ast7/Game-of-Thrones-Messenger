@@ -1,11 +1,11 @@
 import datetime
 import sys
+import time
 
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QSize
-from PyQt5.QtGui import QKeySequence
-from PyQt5.QtWidgets import QApplication, QMainWindow, QShortcut
-
+from PyQt5.QtGui import QKeySequence, QIcon
+from PyQt5.QtWidgets import QApplication, QMainWindow, QShortcut, QAction
 from config import UiDesignConfig, UiAppConfig
 from db.chat import ChatDB
 from db.db import DataBase
@@ -13,7 +13,9 @@ from db.message import MessageDB
 from db.user import UserDB
 from design import Ui_MainWindow, SCREEN_HEIGHT, SCREEN_WIDTH
 from models.message import Message
-
+import keyboard
+import pyglet
+from pygame import mixer
 
 class Assistant(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -24,23 +26,38 @@ class Assistant(QMainWindow, Ui_MainWindow):
         self.app = UiAppConfig()
         self.setupChats(len(self.app.bots))
         self.menu()
-        self.shortcut = QShortcut(QKeySequence('Return'), self)
+        self.shortcut = QShortcut(QKeySequence("Return"), self)
         self.shortcut.activated.connect(self.send)
+        mixer.init()
+        keyboard.add_hotkey("ctrl+M", lambda: self.play_music())
+        keyboard.add_hotkey("ctrl+P", lambda: self.stop_music())
         self.send_button.clicked.connect(self.send)
         self.menu_button.clicked.connect(self.menu)
         self.db = DataBase()
-
         self.message_db = MessageDB(self.db)
         self.chat_db = ChatDB(self.db)
         self.user_db = UserDB(self.db)
+        self.is_play = True
+
+    def play_music(self):
+        if self.is_play:
+            mixer.music.load('data/music/main_music.mp3')
+            mixer.music.play()
+        else:
+            mixer.music.unpause()
+
+    def stop_music(self):
+        mixer.music.pause()
+        self.is_play = False
 
     def open_chat(self):
         self.chat_window.clear()
         self.menu()
-        self.progress_bar.show()
         self.main_bot = self.app.bots[self.sender().i]()
         self.main_bot.mode = 'open'
         self.fill_chat(self.main_bot.__class__.__name__)
+        self.progress_bar.show()
+
         self.main_bot.progress.connect(self.change_progressbar_val)
         self.main_bot.status.connect(self.change_progressbar_status)
         self.main_bot.start()
@@ -54,7 +71,7 @@ class Assistant(QMainWindow, Ui_MainWindow):
         info.setMaximumHeight(self.design.size)
         item = QtWidgets.QListWidgetItem()
         item.setSizeHint(
-            QSize(self.chat_window.width() * 0.5, self.design.size))
+            QSize(self.chat_window.width() * 0.9, self.design.size))
         self.chat_window.addItem(item)
         self.chat_window.setItemWidget(item, info)
         info.setStyleSheet('font-size: 12px;'
@@ -75,16 +92,39 @@ class Assistant(QMainWindow, Ui_MainWindow):
         h = (message_text.count('\n') + 1) * self.design.font_height
         label_text.setMaximumHeight(h)
         item = QtWidgets.QListWidgetItem()
-        item.setSizeHint(QSize(self.button_width, h + 20))
+        item.setSizeHint(QSize(max(min(self.button_width, max_line), 0), h + 20))
         self.chat_window.addItem(item)
         self.chat_window.setItemWidget(item, label_text)
         self.chat_window.scrollToItem(item)
         label_text.i = len(self.app.labels_text)
         self.app.labels_text.append(label_text)
 
+    def create_translate_function(self):
+        translate_button = QtWidgets.QPushButton(self.centralwidget)
+        translate_button.setStyleSheet('background-color: #bac2c8;'
+                                       'border-radius: 5px;'
+                                       'padding: 7px')
+        translate_button.setIcon(QIcon('data/images/translation.png'))
+        item = QtWidgets.QListWidgetItem()
+        item.setSizeHint(QSize(32, 32))
+        self.chat_window.addItem(item)
+        self.chat_window.setItemWidget(item, translate_button)
+
+    def create_audio_function(self):
+        audio = QtWidgets.QPushButton(self.centralwidget)
+        audio.setStyleSheet('background-color: #bac2c8;'
+                            'border-radius: 5px;'
+                            'padding: 7px')
+        audio.setIcon(QIcon('data/images/audio.png'))
+        item = QtWidgets.QListWidgetItem()
+        item.setSizeHint(QSize(32, 32))
+        self.chat_window.addItem(item)
+        self.chat_window.setItemWidget(item, audio)
+
     def change_progressbar_val(self, value):
         self.progress_bar.setValue(value)
         if value == 100:
+            print(2)
             self.progress_bar.hide()
 
     def change_progressbar_status(self, status):
@@ -98,6 +138,8 @@ class Assistant(QMainWindow, Ui_MainWindow):
             self.create_info(self.app.name,
                              datetime.datetime.now().strftime("%d-%m-%Y %H:%M"))
             self.create_message(message)
+            self.create_translate_function()
+            self.create_audio_function()
             self.message_db.post(Message(id=0, name=self.app.name, text=message,
                                          time=datetime.datetime.now(),
                                          chat=self.main_bot.__class__.__name__))
@@ -120,6 +162,8 @@ class Assistant(QMainWindow, Ui_MainWindow):
                         text=answer,
                         time=datetime.datetime.now(),
                         chat=self.main_bot.__class__.__name__))
+            self.create_translate_function()
+            self.create_audio_function()
         except Exception as e:
             print(e)
 
@@ -166,9 +210,9 @@ class Assistant(QMainWindow, Ui_MainWindow):
                 self.menu_button.setGeometry(self.design.shown_menu)
                 self.menu_button.setText('<-')
             else:
-                self.menu_window.hide()
                 for i in range(len(self.chats)):
                     self.chats[i].hide()
+                self.menu_window.hide()
                 self.menu_button.setGeometry(self.design.hidden_menu)
                 self.menu_button.setText('->')
         except Exception as e:
@@ -219,7 +263,8 @@ class Assistant(QMainWindow, Ui_MainWindow):
                 self.create_info(message.name,
                                  message.time.strftime("%d-%m-%Y %H:%M"))
                 self.create_message(message.text)
-
+                self.create_translate_function()
+                self.create_audio_function()
         except Exception as e:
             print(e)
 

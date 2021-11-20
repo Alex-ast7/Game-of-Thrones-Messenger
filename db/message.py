@@ -13,7 +13,6 @@ class MessageDB:
     def get(self, **kwargs):
         response = []
         for elem in self.db.get_response(table='Messages', **kwargs):
-            print(elem)
             response.append(Message(table='', name=UserDB(self.db).get(id=int(elem[1]))[0].name,
                                     time=datetime.datetime.strptime(elem[3], '%H:%M:%S %d-%m-%Y'), text=elem[2], id=elem[0],
                                     chat=ChatDB(self.db).get(id=int(elem[4]))[0].title))
