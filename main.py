@@ -3,7 +3,7 @@ import sys
 import time
 
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, QThread
 from PyQt5.QtGui import QKeySequence, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QShortcut, QAction
 from config import UiDesignConfig, UiAppConfig
@@ -14,8 +14,10 @@ from db.user import UserDB
 from design import Ui_MainWindow, SCREEN_HEIGHT, SCREEN_WIDTH
 from models.message import Message
 import keyboard
-import pyglet
 from pygame import mixer
+
+from toolbots.translater import Translater
+
 
 class Assistant(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -60,6 +62,8 @@ class Assistant(QMainWindow, Ui_MainWindow):
 
         self.main_bot.progress.connect(self.change_progressbar_val)
         self.main_bot.status.connect(self.change_progressbar_status)
+        self.main_bot.answer.connect(self.get_answer)
+        self.main_bot.finished.connect(self.main_bot.quit)
         self.main_bot.start()
 
     def create_info(self, name, date):
@@ -92,7 +96,8 @@ class Assistant(QMainWindow, Ui_MainWindow):
         h = (message_text.count('\n') + 1) * self.design.font_height
         label_text.setMaximumHeight(h)
         item = QtWidgets.QListWidgetItem()
-        item.setSizeHint(QSize(max(min(self.button_width, max_line), 0), h + 20))
+        item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
+        item.setSizeHint(QSize(self.button_width, h + 20))
         self.chat_window.addItem(item)
         self.chat_window.setItemWidget(item, label_text)
         self.chat_window.scrollToItem(item)
@@ -105,10 +110,13 @@ class Assistant(QMainWindow, Ui_MainWindow):
                                        'border-radius: 5px;'
                                        'padding: 7px')
         translate_button.setIcon(QIcon('data/images/translation.png'))
+        translate_button.clicked.connect(self.translate_text)
         item = QtWidgets.QListWidgetItem()
         item.setSizeHint(QSize(32, 32))
         self.chat_window.addItem(item)
         self.chat_window.setItemWidget(item, translate_button)
+        translate_button.i = len(self.app.translates)
+        self.app.translates.append(translate_button)
 
     def create_audio_function(self):
         audio = QtWidgets.QPushButton(self.centralwidget)
@@ -124,7 +132,6 @@ class Assistant(QMainWindow, Ui_MainWindow):
     def change_progressbar_val(self, value):
         self.progress_bar.setValue(value)
         if value == 100:
-            print(2)
             self.progress_bar.hide()
 
     def change_progressbar_status(self, status):
@@ -145,13 +152,11 @@ class Assistant(QMainWindow, Ui_MainWindow):
                                          chat=self.main_bot.__class__.__name__))
             self.progress_bar.show()
             self.main_bot.context = message
-            self.main_bot.progress.connect(self.change_progressbar_val)
-            self.main_bot.status.connect(self.change_progressbar_status)
-            self.main_bot.answer.connect(self.get_answer)
+            self.main_bot.quit()
             self.main_bot.start()
 
     def get_answer(self, answer):
-        self.progress_bar.hide()
+
         try:
             self.create_info(self.main_bot.__class__.__name__,
                              datetime.datetime.now().strftime(
@@ -166,6 +171,36 @@ class Assistant(QMainWindow, Ui_MainWindow):
             self.create_audio_function()
         except Exception as e:
             print(e)
+
+    def translate_text(self):
+        self.tool = Translater('ru-en')
+        self.progress_bar.show()
+        self.tool.i = self.sender().i
+        self.tool.context = self.app.labels_text[self.tool.i].text()
+        print(self.tool.context)
+        self.tool.progress.connect(self.change_progressbar_val)
+        self.tool.status.connect(self.change_progressbar_status)
+        self.tool.result.connect(self.get_result)
+        self.tool.quit()
+        self.tool.start()
+
+    def get_result(self, result):
+        message_text, max_line = self.trasform_widget(result)
+        h = (message_text.count('\n') + 1) * self.design.font_height
+        self.app.labels_text[self.tool.i].setText(message_text)
+        self.app.labels_text[self.tool.i].setMinimumWidth(max_line)
+        self.app.labels_text[self.tool.i].setMaximumWidth(
+            max(min(self.button_width, max_line), 0))
+        print(self.app.labels_text[self.tool.i].size())
+
+
+        self.app.labels_text[self.tool.i].setMaximumHeight(h)
+        item = self.chat_window.item(self.tool.i * 4 + 1)
+
+        print(item.sizeHint())
+        print(item.setSizeHint(
+            QSize(max(min(self.button_width, max_line), 0), h + 20)))
+        print(item.sizeHint())
 
     def setupChats(self, chats_count):
         self.chats = []

@@ -1,9 +1,9 @@
 from tqdm import tqdm
 
-from chatbots.bot import Bot
+from chatbots.bot import ChatBot
 
 
-class QA(Bot):
+class QA(ChatBot):
     def open_load(self):
         self.progress.emit(1)
         self.status.emit('Загрузка поисковика')

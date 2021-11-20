@@ -1,13 +1,16 @@
+from random import randint
+
 from PyQt5.QtCore import QThread, pyqtSignal
 from tqdm import tqdm
 
 
-class Bot(QThread):
+class ChatBot(QThread):
     answer = pyqtSignal(str)
     progress = pyqtSignal(int)
     status = pyqtSignal(str)
     mode = None
     context = ''
+    finished = pyqtSignal()
 
     def run(self):
         if self.mode == 'open':
@@ -20,5 +23,4 @@ class Bot(QThread):
 
     def answer_load(self):
         pass
-
 
