@@ -1,11 +1,10 @@
 import datetime
 import sys
-import time
 
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import QSize, QThread
+from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QKeySequence, QIcon
-from PyQt5.QtWidgets import QApplication, QMainWindow, QShortcut, QAction
+from PyQt5.QtWidgets import QApplication, QMainWindow, QShortcut
 from config import UiDesignConfig, UiAppConfig
 from db.chat import ChatDB
 from db.db import DataBase
@@ -143,13 +142,16 @@ class Assistant(QMainWindow, Ui_MainWindow):
         if message:
             self.main_bot.mode = 'answer'
             self.create_info(self.app.name,
-                             datetime.datetime.now().strftime("%d-%m-%Y %H:%M"))
+                                datetime.datetime.now().strftime("%d-%m-%Y %H:%M"))
             self.create_message(message)
             self.create_translate_function()
             self.create_audio_function()
-            self.message_db.post(Message(id=0, name=self.app.name, text=message,
-                                         time=datetime.datetime.now(),
-                                         chat=self.main_bot.__class__.__name__))
+            try:
+                self.message_db.post(Message(id=0, name=self.app.name, text=message,
+                                             time=datetime.datetime.now(),
+                                             chat=self.main_bot.__class__.__name__))
+            except Exception as e:
+                print(e)
             self.progress_bar.show()
             self.main_bot.context = message
             self.main_bot.quit()
@@ -244,12 +246,34 @@ class Assistant(QMainWindow, Ui_MainWindow):
                     self.chats[i].show()
                 self.menu_button.setGeometry(self.design.shown_menu)
                 self.menu_button.setText('<-')
+                self.menu_button.setStyleSheet('background-color: grey;'
+                                               'font-size: 20px;'
+                                               'color: qlineargradient(spread:pad, '
+                               'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
+                               '#d50000, stop:0.22 '
+                               '#7e0303, stop:0.5 '
+                               '#ff001a, stop:0.78 '
+                               '#7e0303, stop:1 '
+                               '#d50000);'
+                                               'padding-bottom: 4px')
             else:
                 for i in range(len(self.chats)):
                     self.chats[i].hide()
                 self.menu_window.hide()
                 self.menu_button.setGeometry(self.design.hidden_menu)
                 self.menu_button.setText('->')
+                self.menu_button.setStyleSheet('background-color: grey;'
+                                               'font-size: 20px;'
+                                               'color: qlineargradient(spread:pad, '
+                                               'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
+                                               'rgba(209, 166, 107, 255), stop:0.15 '
+                                               'rgba(203, 155, 81, 255), stop:0.37 '
+                                               'rgba(246, 226, 122, 255), stop:0.5 '
+                                               'rgba(246, 242, 192, 255), stop:0.63 '
+                                               'rgba(246, 226, 122, 255), stop:0.85 '
+                                               'rgba(203, 155, 81, 255), stop:1 '
+                                               'rgba(209, 166, 107, 255));'
+                                               'padding-bottom: 4px')
         except Exception as e:
             print(e)
 
@@ -304,12 +328,12 @@ class Assistant(QMainWindow, Ui_MainWindow):
             print(e)
 
 
-if __name__ == '__main__':
-    try:
-        app = QApplication(sys.argv)
-        ex = Assistant()
-        ex.showMaximized()
-        ex.show()
-        sys.exit(app.exec_())
-    except Exception as e:
-        print(e)
+# if __name__ == '__main__':
+#     try:
+#         app = QApplication(sys.argv)
+#         ex = Assistant()
+#         ex.showMaximized()
+#         ex.show()
+#         sys.exit(app.exec_())
+#     except Exception as e:
+#         print(e)

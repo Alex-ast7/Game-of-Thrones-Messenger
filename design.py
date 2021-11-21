@@ -89,12 +89,14 @@ class Ui_MainWindow(object):
         self.menu_button.setStyleSheet('background-color: grey;'
                                        'font-size: 20px;'
                                        'color: qlineargradient(spread:pad, '
-                                       'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
-                                       '#d50000, stop:0.22 '
-                                       '#7e0303, stop:0.5 '
-                                       '#ff001a, stop:0.78 '
-                                       '#7e0303, stop:1 '
-                                       '#d50000);'
+                                      'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
+                                      'rgba(209, 166, 107, 255), stop:0.15 '
+                                      'rgba(203, 155, 81, 255), stop:0.37 '
+                                      'rgba(246, 226, 122, 255), stop:0.5 '
+                                      'rgba(246, 242, 192, 255), stop:0.63 '
+                                      'rgba(246, 226, 122, 255), stop:0.85 '
+                                      'rgba(203, 155, 81, 255), stop:1 '
+                                      'rgba(209, 166, 107, 255));'
                                        'padding-bottom: 4px')
         self.menu_button.setText('->')
         MainWindow.setStatusBar(self.statusbar)

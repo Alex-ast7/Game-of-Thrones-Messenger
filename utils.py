@@ -54,6 +54,6 @@
 # # pretty print last ouput tokens from bot
 # print(
 #     f"===> GPT-3:  {tokenizer.decode(chat_history_ids[:, input_len:][0], skip_special_tokens=True)}")
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, MarianTokenizer
 mode = 'ru-en'
-AutoTokenizer.from_pretrained(f"Helsinki-NLP/opus-mt-ru-en")
+MarianTokenizer.from_pretrained(f"Helsinki-NLP/opus-mt-ru-en", cache_dir='cache')

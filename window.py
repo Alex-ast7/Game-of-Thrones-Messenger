@@ -1,12 +1,38 @@
 import sys
 
-from PyQt5.QtWidgets import QMainWindow, QApplication
-from window_design import Ui_MainWindow
+from PyQt5.QtGui import QKeySequence
+from PyQt5.QtWidgets import QMainWindow, QApplication, QShortcut
+import json
 
-class FirstWindow(QMainWindow, Ui_MainWindow):
+from main import Assistant
+from window_design import Ui_MainWindow2
+
+
+class FirstWindow(QMainWindow, Ui_MainWindow2):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        try:
+            self.pushButton_ok.clicked.connect(self.open_window)
+            self.pushButton_ok.clicked.connect(self.change_name)
+            self.shortcut = QShortcut(QKeySequence("Return"), self)
+            self.shortcut.activated.connect(self.change_name)
+            self.shortcut.activated.connect(self.open_window)
+        except Exception as e:
+            print(e)
+
+    def open_window(self):
+            self.close()
+            self.w2 = Assistant()
+            self.w2.show()
+
+    def change_name(self):
+        try:
+            user_name = self.name_input.text()
+            json.dump({'name': user_name}, open('db/config.json', 'w'),
+                      ensure_ascii=False)
+        except Exception as e:
+            print(e)
 
 if __name__ == '__main__':
     try:

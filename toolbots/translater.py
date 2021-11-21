@@ -8,7 +8,7 @@ class Translater(ToolBot):
     def result_load(self):
         self.progress.emit(10)
         self.status.emit('Загрузка токенизатора')
-        tokenizer = AutoTokenizer.from_pretrained(f"Helsinki-NLP/opus-mt-{self.mode}")
+        tokenizer = AutoTokenizer.from_pretrained(f"Helsinki-NLP/opus-mt-{self.mode}", cache_dir='cache')
         self.progress.emit(40)
         self.status.emit('Загрузка модели')
         model = AutoModelForSeq2SeqLM.from_pretrained(

@@ -1,6 +1,8 @@
 from PyQt5 import QtCore
 from PyQt5.QtGui import QFont, QFontMetrics
 from PyQt5.QtWidgets import QMainWindow
+import json
+
 
 from chatbots.echo import Echo
 from chatbots.speaker import Speaker
@@ -45,7 +47,8 @@ class UiDesignConfig(QMainWindow):
 class UiAppConfig(QMainWindow):
     def __init__(self):
         super(UiAppConfig, self).__init__()
-        self.name = 'Саша'
+        self.name = json.load(open('db/config.json', 'r'))['name']
+        print(self.name)
         self.bots = [Echo, Speaker]
         self.labels_text = []
         self.infoes = []

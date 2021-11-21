@@ -7,7 +7,7 @@ from win32api import GetSystemMetrics
 SCREEN_HEIGHT = GetSystemMetrics(1) * 0.8
 SCREEN_WIDTH = GetSystemMetrics(0) * 0.25
 
-class Ui_MainWindow(object):
+class Ui_MainWindow2(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -62,6 +62,7 @@ class Ui_MainWindow(object):
                                                  SCREEN_WIDTH * 0.377,
                                                  SCREEN_HEIGHT * 0.04))
         self.name_input.setStyleSheet('background-color: white;'
+                                      'font-size: 18px;'
                                       'border-style: outset;'
                                'border-width: 2px;'
                                'border-color: qlineargradient(spread:pad, '
@@ -75,7 +76,7 @@ class Ui_MainWindow(object):
                                       'rgba(209, 166, 107, 255));')
         self.name_input.setObjectName("name_input")
         self.pushButton_ok = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_ok.setGeometry(QtCore.QRect(180, 300, 75, 23))
+        self.pushButton_ok.setGeometry(QtCore.QRect(190, 300, 75, 23))
         self.pushButton_ok.setStyleSheet('border-style: outset;'
                                          'background-color: white;'
                                'border-width: 2px;'
