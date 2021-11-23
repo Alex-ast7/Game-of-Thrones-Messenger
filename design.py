@@ -148,6 +148,22 @@ class Ui_MainWindow(object):
                                                   SCREEN_HEIGHT * 0.5,
                                                   SCREEN_WIDTH * 0.5,
                                                   SCREEN_HEIGHT * 0.03))
+        self.help_button = QtWidgets.QPushButton(self.centralwidget)
+        self.help_button.setGeometry((QtCore.QRect(SCREEN_WIDTH * 0.77, 14, 80, 20)))
+        self.help_button.setText('помощь')
+        self.help_button.setStyleSheet('background-color: grey;'
+                                  'font-family: "Trajan Pro 3";'
+                                'font-weight: bold;'
+                                  'font-size: 13px;'
+                                  'color: qlineargradient(spread:pad, '
+                                  'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
+                                  'rgba(209, 166, 107, 255), stop:0.15 '
+                                  'rgba(203, 155, 81, 255), stop:0.37 '
+                                  'rgba(246, 226, 122, 255), stop:0.5 '
+                                  'rgba(246, 242, 192, 255), stop:0.63 '
+                                  'rgba(246, 226, 122, 255), stop:0.85 '
+                                  'rgba(203, 155, 81, 255), stop:1 '
+                                  'rgba(209, 166, 107, 255))')
         self.progress_bar.setAlignment(Qt.AlignCenter)
         self.progress_bar.setTextVisible(True)
         self.progress_bar.hide()

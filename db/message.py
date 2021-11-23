@@ -1,5 +1,6 @@
 import datetime
 
+from config import UiAppConfig
 from db.chat import ChatDB
 from db.db import DataBase
 from db.user import UserDB
@@ -23,3 +24,7 @@ class MessageDB:
                            time=datetime.datetime.strftime(message.time, '%H:%M:%S %d-%m-%Y'),
                            text=message.text,
                            chat=ChatDB(self.db).get(title=message.chat)[0].id)
+
+    def put(self, message: Message, **kwargs):
+        self.db.put_response(table='Messages', update=kwargs, where={'id': message.id})
+

@@ -12,7 +12,7 @@ class Translater(ToolBot):
         self.progress.emit(40)
         self.status.emit('Загрузка модели')
         model = AutoModelForSeq2SeqLM.from_pretrained(
-            "Helsinki-NLP/opus-mt-ru-en")
+            f"Helsinki-NLP/opus-mt-{self.mode}")
         self.progress.emit(70)
         self.status.emit('Генерация ответа')
         input_ids = tokenizer.encode(self.context, return_tensors="pt")

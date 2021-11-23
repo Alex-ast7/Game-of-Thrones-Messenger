@@ -21,6 +21,21 @@ class DataBase:
         request = f'''insert into {table}'''
         if kwargs:
             request += '(' + ', '.join([k for k in kwargs.keys()]) + ')' + \
-                       'values' + '(' + ', '.join([f'{v}' if type(v).__name__ == 'int' else f'"{v}"' for v in kwargs.values()]) + ')'
+                       'values' + '(' + ', '.join(
+                [f'{v}' if type(v).__name__ == 'int' else f'"{v}"' for v in
+                 kwargs.values()]) + ')'
+        self.cursor.execute(request)
+        self.connect.commit()
+
+    def put_response(self, table, update: dict, where: dict):
+        self.cursor = self.connect.cursor()
+        request = f'''update {table}'''
+        if update and where:
+            request += ' set ' + ", ".join(
+                [f"{k}={v}" if type(v).__name__ == 'int' else f'{k}="{v}"' for
+                 k, v in update.items()]) + ' where ' + ' and '.join(
+                [f"{k}={v}" if type(v).__name__ == 'int' else f'{k}="{v}"' for
+                 k, v in where.items()])
+        print(request)
         self.cursor.execute(request)
         self.connect.commit()
