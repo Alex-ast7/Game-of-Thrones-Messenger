@@ -1,10 +1,9 @@
-from random import randint
-
 from PyQt5.QtCore import QThread, pyqtSignal
-from tqdm import tqdm
 
 
+# общий класс для работы ботов
 class ChatBot(QThread):
+    # подключение сигналов
     answer = pyqtSignal(str)
     progress = pyqtSignal(int)
     status = pyqtSignal(str)
@@ -12,6 +11,7 @@ class ChatBot(QThread):
     context = ''
     finished = pyqtSignal()
 
+    # метод изменения режимов бота
     def run(self):
         if self.mode == 'open':
             self.open_load()
@@ -23,4 +23,3 @@ class ChatBot(QThread):
 
     def answer_load(self):
         pass
-

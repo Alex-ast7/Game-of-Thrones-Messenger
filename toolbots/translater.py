@@ -1,14 +1,21 @@
 from toolbots.bot import ToolBot
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
+
+# класс модели для перевода
 class Translater(ToolBot):
     def __init__(self, mode):
         super(Translater, self).__init__()
         self.mode = mode
+
+    # метод загрузки модели
     def result_load(self):
         self.progress.emit(10)
         self.status.emit('Загрузка токенизатора')
-        tokenizer = AutoTokenizer.from_pretrained(f"Helsinki-NLP/opus-mt-{self.mode}", cache_dir='cache')
+        tokenizer = AutoTokenizer.from_pretrained(f"Helsinki-NLP/opus-mt-"
+                                                  f"{self.mode}",
+                                                  cache_dir='cache')
+        # изменение значений и статуса полосы прогрузки
         self.progress.emit(40)
         self.status.emit('Загрузка модели')
         model = AutoModelForSeq2SeqLM.from_pretrained(

@@ -3,6 +3,7 @@ import datetime
 from pydantic import BaseModel
 
 
+# класс для установки типов в таблице бд
 class Message(BaseModel):
     id: int
     time: datetime.datetime

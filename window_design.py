@@ -1,39 +1,42 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtGui import QFontDatabase
 from win32api import GetSystemMetrics
 
-
+# получение размеров экрана
 SCREEN_HEIGHT = GetSystemMetrics(1) * 0.8
 SCREEN_WIDTH = GetSystemMetrics(0) * 0.25
 
+
+# класс дизайна окна ввода имени
 class Ui_MainWindow2(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setFixedSize(SCREEN_WIDTH, SCREEN_HEIGHT)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        # загрузка щрифта
         fontDB = QFontDatabase()
         fontDB.addApplicationFont('data/fonts/Trajan.ttf')
         self.centralwidget.setStyleSheet('background-color: #363636')
+        # создание виджетов и установка их стилей
         self.main_label = QtWidgets.QPushButton(self.centralwidget)
         self.main_label.setGeometry(QtCore.QRect(0, 0, SCREEN_WIDTH,
                                                  SCREEN_HEIGHT * 0.07))
         self.main_label.setText('Game Of Thrones')
         self.main_label.setStyleSheet('font-size: 24px;'
                                       'font-family: "Trajan Pro 3";'
-                                  'color: qlineargradient(spread:pad, '
-                                  'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
-                                  'rgba(209, 166, 107, 255), stop:0.15 '
-                                  'rgba(203, 155, 81, 255), stop:0.37 '
-                                  'rgba(246, 226, 122, 255), stop:0.5 '
-                                  'rgba(246, 242, 192, 255), stop:0.63 '
-                                  'rgba(246, 226, 122, 255), stop:0.85 '
-                                  'rgba(203, 155, 81, 255), stop:1 '
-                                  'rgba(209, 166, 107, 255));'
-                                 'border-style: outset;'
-                                 'border-width: 0px;'
-                                 'border-color: #363636')
+                                      'color: qlineargradient(spread:pad, '
+                                      'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
+                                      'rgba(209, 166, 107, 255), stop:0.15 '
+                                      'rgba(203, 155, 81, 255), stop:0.37 '
+                                      'rgba(246, 226, 122, 255), stop:0.5 '
+                                      'rgba(246, 242, 192, 255), stop:0.63 '
+                                      'rgba(246, 226, 122, 255), stop:0.85 '
+                                      'rgba(203, 155, 81, 255), stop:1 '
+                                      'rgba(209, 166, 107, 255));'
+                                      'border-style: outset;'
+                                      'border-width: 0px;'
+                                      'border-color: #363636')
         self.main_label.setEnabled(False)
         self.label = QtWidgets.QPushButton(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(SCREEN_WIDTH * 0.3,
@@ -42,15 +45,15 @@ class Ui_MainWindow2(object):
                                             SCREEN_HEIGHT * 0.07))
         self.label.setStyleSheet('font-size: 24px;'
                                  'font-family: "Trajan Pro 3";'
-                                  'color: qlineargradient(spread:pad, '
-                                  'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
-                                  'rgba(209, 166, 107, 255), stop:0.15 '
-                                  'rgba(203, 155, 81, 255), stop:0.37 '
-                                  'rgba(246, 226, 122, 255), stop:0.5 '
-                                  'rgba(246, 242, 192, 255), stop:0.63 '
-                                  'rgba(246, 226, 122, 255), stop:0.85 '
-                                  'rgba(203, 155, 81, 255), stop:1 '
-                                  'rgba(209, 166, 107, 255));'
+                                 'color: qlineargradient(spread:pad, '
+                                 'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
+                                 'rgba(209, 166, 107, 255), stop:0.15 '
+                                 'rgba(203, 155, 81, 255), stop:0.37 '
+                                 'rgba(246, 226, 122, 255), stop:0.5 '
+                                 'rgba(246, 242, 192, 255), stop:0.63 '
+                                 'rgba(246, 226, 122, 255), stop:0.85 '
+                                 'rgba(203, 155, 81, 255), stop:1 '
+                                 'rgba(209, 166, 107, 255));'
                                  'border-style: outset;'
                                  'border-width: 0px;'
                                  'border-color: #363636')
@@ -64,8 +67,9 @@ class Ui_MainWindow2(object):
         self.name_input.setStyleSheet('background-color: white;'
                                       'font-size: 18px;'
                                       'border-style: outset;'
-                               'border-width: 2px;'
-                               'border-color: qlineargradient(spread:pad, '
+                                      'border-width: 2px;'
+                                      'border-color: qlineargradient('
+                                      'spread:pad, '
                                       'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
                                       'rgba(209, 166, 107, 255), stop:0.15 '
                                       'rgba(203, 155, 81, 255), stop:0.37 '
@@ -79,16 +83,17 @@ class Ui_MainWindow2(object):
         self.pushButton_ok.setGeometry(QtCore.QRect(190, 300, 75, 23))
         self.pushButton_ok.setStyleSheet('border-style: outset;'
                                          'background-color: white;'
-                               'border-width: 2px;'
-                               'border-color: qlineargradient(spread:pad, '
-                                      'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
-                                      'rgba(209, 166, 107, 255), stop:0.15 '
-                                      'rgba(203, 155, 81, 255), stop:0.37 '
-                                      'rgba(246, 226, 122, 255), stop:0.5 '
-                                      'rgba(246, 242, 192, 255), stop:0.63 '
-                                      'rgba(246, 226, 122, 255), stop:0.85 '
-                                      'rgba(203, 155, 81, 255), stop:1 '
-                                      'rgba(209, 166, 107, 255));')
+                                         'border-width: 2px;'
+                                         'border-color: qlineargradient('
+                                         'spread:pad, '
+                                         'x1:0, y1:0.5, x2:1, y2:0.5, stop:0 '
+                                         'rgba(209, 166, 107, 255), stop:0.15 '
+                                         'rgba(203, 155, 81, 255), stop:0.37 '
+                                         'rgba(246, 226, 122, 255), stop:0.5 '
+                                         'rgba(246, 242, 192, 255), stop:0.63 '
+                                         'rgba(246, 226, 122, 255), stop:0.85 '
+                                         'rgba(203, 155, 81, 255), stop:1 '
+                                         'rgba(209, 166, 107, 255));')
         self.pushButton_ok.setObjectName("pushButton_ok")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)

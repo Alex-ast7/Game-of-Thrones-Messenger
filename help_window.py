@@ -2,11 +2,13 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QMainWindow
 
 
+# класс окна Помощь
 class Help(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Помощь')
         self.setGeometry(500, 100, 300, 300)
+        # настройка виджета для отображения текста
         self.text_window = QtWidgets.QTextBrowser(self)
         self.text_window.resize(300, 300)
         self.text_window.setStyleSheet('font-size: 12px')
