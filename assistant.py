@@ -5,6 +5,8 @@ import time
 import winsound
 
 import pyglet as pyglet
+import sys
+
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QKeySequence, QIcon
@@ -24,6 +26,8 @@ from toolbots.translater import Translater
 from toolbots.voicer import Voicer
 import simpleaudio
 import playsound
+
+
 class Assistant(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
