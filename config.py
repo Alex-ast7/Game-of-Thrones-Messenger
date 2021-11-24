@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QMainWindow
 import json
 
 from chatbots.echo import Echo
+from chatbots.qa import QA
 from chatbots.rater import Rater
 from chatbots.speaker import Speaker
 from db.db import DataBase
@@ -69,7 +70,7 @@ class UiAppConfig(QMainWindow):
         except Exception as e:
             print(e)
         # создание списков для хранения различной информации
-        self.bots = [Echo, Speaker, Rater]
+        self.bots = [Echo, Speaker, Rater, QA]
         self.labels_text = []
         self.infoes = []
         self.translates = []

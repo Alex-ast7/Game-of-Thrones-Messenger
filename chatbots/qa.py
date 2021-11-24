@@ -25,7 +25,8 @@ class QA(ChatBot):
         }
         result = self.model(QA_input)
         self.progress.emit(100)
-        self.answer.emit(result)
+        print(result)
+        self.answer.emit(result['answer'])
 
 
 QA.__name__ = 'Отвечалка'

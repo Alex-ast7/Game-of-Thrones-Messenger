@@ -137,15 +137,21 @@ class Assistant(QMainWindow, Ui_MainWindow):
         self.app.translates.append(translate_button)
 
     def open_translate_window(self):
-        self.choice, ok_pressed = QInputDialog.getItem(
+        self.choice_translate, ok_pressed = QInputDialog.getItem(
             self, "Выбор", "Выберите вариант перевода",
             ("ru-en", "en-ru"), 0, False)
         self.translate_text()
 
+    def open_voice_window(self):
+        self.choice_voice, ok_pressed = QInputDialog.getItem(
+            self, "Выбор", "Выберите вариант озвучки",
+            ("ru", "en"), 0, False)
+        self.voice_text()
+
 
     def create_audio_function(self):
         audio = QtWidgets.QPushButton(self.centralwidget)
-        audio.clicked.connect(self.voice_text)
+        audio.clicked.connect(self.open_voice_window)
         audio.setStyleSheet('background-color: #bac2c8;'
                             'border-radius: 5px;'
                             'padding: 7px')
@@ -205,7 +211,7 @@ class Assistant(QMainWindow, Ui_MainWindow):
 
     def translate_text(self):
         print(self.choice)
-        self.tool = Translater(self.choice)
+        self.tool = Translater(self.choice_translate)
         self.progress_bar.show()
         self.tool.i = self.sender().i
         self.tool.context = self.app.labels_text[self.tool.i].text()
@@ -229,7 +235,7 @@ class Assistant(QMainWindow, Ui_MainWindow):
         self.message_db.put(message, text=message_text)
 
     def voice_text(self):
-        self.tool = Voicer('ru')
+        self.tool = Voicer(self.choice_voice)
         self.progress_bar.show()
         self.tool.i = self.sender().i
         self.tool.context = self.app.labels_text[self.tool.i].text()
