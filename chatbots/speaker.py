@@ -6,7 +6,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from chatbots.bot import ChatBot
 
 
-# класс для работы бота Говрилка
+# класс для работы бота Говорилка
 class Speaker(ChatBot):
     # метод установки параметров
     def get_length_param(self, text: str) -> str:

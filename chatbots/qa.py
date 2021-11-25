@@ -5,7 +5,7 @@ from chatbots.bot import ChatBot
 
 # класс для работы бота Отвечалка
 class QA(ChatBot):
-    # метод изменения статусов бота
+    # метод изменения статусов бота и загрузка модели
     def open_load(self):
         self.progress.emit(1)
         self.status.emit('Загрузка модели')
@@ -25,7 +25,6 @@ class QA(ChatBot):
         }
         result = self.model(QA_input)
         self.progress.emit(100)
-        print(result)
         self.answer.emit(result['answer'])
 
 
